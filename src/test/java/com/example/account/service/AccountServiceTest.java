@@ -203,15 +203,23 @@ public class AccountServiceTest {
                         .name(accountUser.getName())
                         .privateNumber(accountUser.getPrivateNumber())
                         .build()));
+
         given(accountRepository
                 .findByAccountUserAndAccountNumber(any(), anyString()))
                 .willReturn(Optional.of(Account.builder()
                                 .id(account.getId())
                                 .accountUser(accountUser)
                                 .accountStatus(AccountStatus.IN_USE)
-                                .balance(0)
                                 .accountNumber(account.getAccountNumber())
-                                .build()));
+                                        .build()));
+
+        given(accountRepository.save(any()))
+                .willReturn(Account.builder()
+                        .id(account.getId())
+                        .accountUser(accountUser)
+                        .accountStatus(AccountStatus.UNREGISTERED)
+                        .accountNumber(account.getAccountNumber())
+                        .build());
         //when
         Account compareAccount = accountService.unRegisteredAccount(
                 accountUser.getId(), account.getAccountNumber()
